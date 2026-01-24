@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useLoginUserMutation } from "@/redux/api/loginApi";
+import { useLoginUserMutation } from "@/redux/api/authApi";
 import {} from "@/redux/api/userApi";
 import { setUser } from "@/redux/authSlice";
 import { useAppDispatch } from "@/redux/store";
