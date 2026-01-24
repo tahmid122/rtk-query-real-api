@@ -1,50 +1,21 @@
-import type { NextRequest } from "next/server";
-import { NextResponse } from "next/server";
-import { TUser } from "./types";
-import { verifyJWT } from "./utils/verifyJWT";
+import { NextRequest, NextResponse } from "next/server";
 
-const AuthRoutes = ["/login", "/signup"];
-
-type Role = keyof typeof roleBasedRoutes;
-
-const roleBasedRoutes = {
-  user: [/^\//],
-  admin: [/^\//, /^\/dashboard/],
-};
-
-export async function proxy(request: NextRequest) {
-  const { pathname } = request.nextUrl;
-
+export function proxy(request: NextRequest) {
   const token = request.cookies.get("accessToken")?.value;
+  const protectedRoutes = ["/doses"];
 
-  if (!token) {
-    if (AuthRoutes.includes(pathname)) {
-      return NextResponse.next();
-    } else {
-      return NextResponse.redirect(
-        new URL(`/login?redirect=${pathname}`, request.url)
-      );
-    }
+  const isProtectedRoute = protectedRoutes.some((route) =>
+    request.nextUrl.pathname.startsWith(route),
+  );
+
+  if (!token && isProtectedRoute) {
+    const loginUrl = new URL("/login", request.url);
+    return NextResponse.redirect(loginUrl);
   }
 
-  //   Extract token
-  try {
-    const user = verifyJWT(token) as TUser;
-
-    if (user?.role && roleBasedRoutes[user?.role as Role]) {
-      const routes = roleBasedRoutes[user?.role as Role];
-
-      if (routes.some((route) => pathname.match(route))) {
-        return NextResponse.next();
-      }
-    }
-  } catch {
-    return NextResponse.redirect(new URL("/login", request.url));
-  }
-
-  return NextResponse.redirect(new URL("/", request.url));
+  return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/dashboard/:page*", "/login", "/signup"],
+  matcher: ["/doses/:path*"],
 };

@@ -12,6 +12,7 @@ import {
   PURGE,
   REGISTER,
 } from "redux-persist";
+import { setupListeners } from "@reduxjs/toolkit/query";
 
 const createNoopStorage = () => {
   return {
@@ -62,3 +63,4 @@ export type AppDispatch = typeof store.dispatch;
 export const useAppDispatch = () => useDispatch<AppDispatch>();
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
 export const persistor = persistStore(store);
+setupListeners(store.dispatch);
