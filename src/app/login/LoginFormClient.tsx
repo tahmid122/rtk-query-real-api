@@ -14,6 +14,7 @@ import { useLoginUserMutation } from "@/redux/api/loginApi";
 import {} from "@/redux/api/userApi";
 import { setUser } from "@/redux/authSlice";
 import { useAppDispatch } from "@/redux/store";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
 
@@ -102,6 +103,12 @@ export default function LoginFormClient() {
             {isError}
           </p>
         )}
+        <Link
+          href="/signup"
+          className="text-center w-full block mt-3 text-sm font-semibold underline"
+        >
+          Sign Up
+        </Link>
       </CardContent>
       <CardFooter className="flex-col gap-2"></CardFooter>
     </Card>
